@@ -86,10 +86,6 @@ anchor test
 - Yarn or npm
 - Anchor 0.31.1
 
-## License
-MIT
-
-
 ## 📬 Contact
 
 **You can reach through the following means**  
