@@ -2,7 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { AnchorEscrow } from "../target/types/anchor_escrow";
 
-import takerwallet from "/home/xpsolitesol/Turbin3/anchor-escrow/PsWBmRKR837uz18mG2Udx2bkxBSzfUkw8kQbp927m4L.json";
+import takerwallet from "/home/xpsolitesol/Turbin3/Q3_25_Builder_psolite/anchor-escrow/PsWBmRKR837uz18mG2Udx2bkxBSzfUkw8kQbp927m4L.json";
 import makerwallet from "/home/xpsolitesol/Turbin3/turbin3-wallet.json";
 import { createMint, getAssociatedTokenAddress, getOrCreateAssociatedTokenAccount, mintTo } from "@solana/spl-token";
 
@@ -166,23 +166,43 @@ describe("anchor-escrow", () => {
     console.log("Your transaction signature", tx);
   });
 
-  it("Withdraw and Close Escrow!", async () => {
+  // If you want to test the taker functionality, uncomment the below code block, 
+  // and comment the refund functionality (because the refund will fail due to taker function closes the escrow).
+  
+  // it("Withdraw and Close Escrow for the taker!", async () => {
+  //   // Add your test here.
+  //   const tx = await program.methods.take().accountsStrict({
+  //     maker: makerKeypair.publicKey,
+  //     taker: takerKeypair.publicKey,
+  //     mintA,
+  //     mintB,
+  //     makerAtaB,
+  //     takerAtaA,
+  //     takerAtaB,
+  //     vault,
+  //     escrow,
+  //     systemProgram: anchor.web3.SystemProgram.programId,
+  //     associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+  //     tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+  //   }).signers([takerKeypair])
+  //   .rpc();
+
+  //   console.log("Your transaction signature", tx);
+  // });
+
+  it("Withdraw and Close Escrow to Refund!", async () => {
     // Add your test here.
-    const tx = await program.methods.take().accountsStrict({
+    const tx = await program.methods.refund().accountsStrict({
       maker: makerKeypair.publicKey,
-      taker: takerKeypair.publicKey,
       mintA,
       mintB,
-      makerAtaB,
-      takerAtaA,
-      takerAtaB,
+      makerAtaA,
       vault,
       escrow,
       systemProgram: anchor.web3.SystemProgram.programId,
       associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
       tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
-    }).signers([takerKeypair])
-    .rpc();
+    }).rpc();
 
     console.log("Your transaction signature", tx);
   });

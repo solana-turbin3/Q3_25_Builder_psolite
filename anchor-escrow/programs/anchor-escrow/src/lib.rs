@@ -6,7 +6,7 @@ mod state;
 
 use instructions::*;
 
-declare_id!("28J49xeyAoue6zEE7K6Cu2AWVMcm17mEAwzrxZ88Hj97");
+declare_id!("xy252r5qXqNKi5urDmfEbdR4m6KBuEJDBY8zAkeUpZC");
 
 #[program]
 pub mod anchor_escrow {
@@ -20,6 +20,11 @@ pub mod anchor_escrow {
 
     pub fn take(ctx: Context<Take>) -> Result<()> {
         ctx.accounts.transfer()?;
+        ctx.accounts.withdraw_and_close_vault()?;
+        Ok(())
+    }
+
+    pub fn refund(ctx: Context<Refund>) -> Result<()> {
         ctx.accounts.withdraw_and_close_vault()?;
         Ok(())
     }
