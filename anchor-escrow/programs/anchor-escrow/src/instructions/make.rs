@@ -8,7 +8,7 @@ use anchor_spl::{
     },
 };
 
-use crate::state::Escrow;
+use crate::{state::Escrow, error::ErrorCode};
 
 #[derive(Accounts)]
 #[instruction(seed: u64)]
@@ -60,6 +60,13 @@ pub struct Make<'info> {
 
 impl<'info> Make<'info> {
     pub fn init_escrow(&mut self, seed: u64, receive: u64, bumps: &MakeBumps) -> Result<()> {
+        
+        // Validate amount
+        require!(receive > 0, ErrorCode::InvalidAmount); 
+        
+        // Ensure the mint_a and mint_b are different
+        require!(self.mint_a.key() != self.mint_b.key(), ErrorCode::InvalidTokenMint);  
+        
         self.escrow.set_inner(Escrow {
             seed,
             maker: self.maker.key(),
@@ -72,6 +79,10 @@ impl<'info> Make<'info> {
     }
 
     pub fn deposit(&mut self, deposit: u64) -> Result<()> {
+
+        // Validate amount
+        require!(deposit > 0, ErrorCode::InvalidAmount);  
+
         let transfer_accounts = TransferChecked {
             from: self.maker_ata_a.to_account_info(),
             to: self.vault.to_account_info(),
