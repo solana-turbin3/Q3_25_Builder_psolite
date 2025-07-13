@@ -136,7 +136,7 @@ impl<'info> Deposit<'info> {
         };
 
         let seeds = &[
-            b"lp",
+            b"config",
             &self.config.seed.to_le_bytes()[..],
             &[self.config.config_bump],
         ];
