@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 use anchor_lang::prelude::*;
 
 mod instructions;
@@ -32,9 +33,11 @@ pub mod anchor_amm {
         Ok(())
     }
 
-    pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
+    pub fn withdraw(ctx: Context<Withdraw>, amount: u64, min_x: u64, min_y: u64,) -> Result<()> {
         ctx.accounts.withdraw(
-            amount
+            amount,
+            min_x,
+            min_y
         )?;
         Ok(())
     }

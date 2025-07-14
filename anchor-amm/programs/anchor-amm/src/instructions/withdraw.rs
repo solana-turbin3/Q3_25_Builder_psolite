@@ -3,7 +3,7 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token::{burn, transfer, Burn, Mint, Token, TokenAccount, Transfer},
 };
-use constant_product_curve::{ConstantProduct, CurveError, XYAmounts};
+use constant_product_curve::{ConstantProduct, XYAmounts};
 
 use crate::{error::AmmError, state::Config};
 
@@ -71,7 +71,7 @@ pub struct Withdraw<'info> {
 }
 
 impl<'info> Withdraw<'info> {
-    pub fn withdraw(&mut self, amount: u64) -> Result<()> {
+    pub fn withdraw(&mut self, amount: u64, min_x: u64, min_y: u64,) -> Result<()> {
         require!(self.config.locked == false, AmmError::PoolLocked);
         require!(amount > 0, AmmError::InvalidAmount);
         require!(
@@ -91,10 +91,13 @@ impl<'info> Withdraw<'info> {
             (amount.x, amount.y)
         };
 
-        self.withdraw_tokens(true, x);
-        self.withdraw_tokens(false, y);
+        // Check for slippage
+        require!(min_x <= x && min_y <= y, AmmError::SlippageExceeded);
 
-        self.burn_lp_tokens(amount);
+        let _ = self.withdraw_tokens(true, x);
+        let _ = self.withdraw_tokens(false, y);
+
+        let _ = self.burn_lp_tokens(amount);
 
         Ok(())
     }
@@ -115,11 +118,11 @@ impl<'info> Withdraw<'info> {
         let cpi_accounts = Transfer {
             from,
             to,
-            authority: self.user.to_account_info(),
+            authority: self.config.to_account_info(),
         };
 
         let seeds = &[
-            b"lp",
+            b"config",
             &self.config.seed.to_le_bytes()[..],
             &[self.config.config_bump],
         ];

@@ -28,7 +28,7 @@ describe("anchor-amm", () => {
 
 
 
-  const seed = new anchor.BN(9); // Unique seed for the Config
+  const seed = new anchor.BN(13); // Unique seed for the Config
   const fee = 1000; // Fee for the AMM
   const systemProgram = anchor.web3.SystemProgram.programId;
   const associatedTokenProgram = anchor.utils.token.ASSOCIATED_PROGRAM_ID;
@@ -248,6 +248,89 @@ describe("anchor-amm", () => {
     console.log("Your transaction signature", tx);
 
   });
+
+  it("Withdraw!", async () => {
+
+    const amount = new anchor.BN(30000 * Math.pow(10, 6));
+    const min_x = new anchor.BN(20000 * Math.pow(10, 9));
+    const min_y = new anchor.BN(40000 * Math.pow(10, 9));
+
+    const tx = await program.methods.withdraw(amount, min_x, min_y)
+      .accountsStrict({
+        user: keypair.publicKey,
+        mintX,
+        mintY,
+        mintLp,
+        vaultX: vaultAtaX,
+        vaultY: vaultAtaY,
+        userX: userAtaX,
+        userY: userAtaY,
+        userLp: userAtaLp,
+        config,
+        systemProgram,
+        associatedTokenProgram,
+        tokenProgram,
+      }).rpc();
+
+    await confirmTx(tx);
+    console.log("Your transaction signature", tx);
+
+  });
+  // it("Second Deposit!", async () => {
+
+  //   // Fetch the program account (config) before deposit
+  //   // const configAccount = await program.account.config.fetch(config);
+
+  //   const vaultXBalance = await safeGetTokenAccountBalance(vaultAtaX);
+  //   const vaultYBalance = await safeGetTokenAccountBalance(vaultAtaY);
+  //   const totalSupplyStr = (await connection.getTokenSupply(mintLp)).value.amount;
+
+  //   // const vaultXBalance = BigInt(vaultXBalanceStr);
+  //   // const vaultYBalance = BigInt(vaultYBalanceStr);
+  //   const totalSupply = Number(totalSupplyStr);
+
+
+  //   const amountOfX = 80000 * Math.pow(10, 9); // 80,000 X Tokens
+  //   const amountOfY = 7880 * Math.pow(10, 9); // 7,880 Y Tokens
+
+  //   let liquidity: number;
+
+  //   if (vaultXBalance === 0 && vaultYBalance === 0) {
+  //     // Initial deposit 
+  //     liquidity = Math.sqrt(amountOfX * amountOfY);
+  //   } else {
+  //     // Subsequent deposit
+  //     const X = amountOfX * totalSupply / vaultXBalance;
+  //     const Y = amountOfY * totalSupply / vaultYBalance;
+  //     console.log("X:", X, "Y:", Y);
+  //     liquidity = Math.min(X, Y);
+  //   }
+  //   const amount = new anchor.BN((liquidity * Math.pow(10, 6)) / Math.pow(10, 9));
+  //   const max_x = new anchor.BN(amountOfX);
+  //   const max_y = new anchor.BN(amountOfY);
+
+  //   const tx = await program.methods.deposit(amount, max_x, max_y)
+  //     .accountsStrict({
+  //       user: keypair.publicKey,
+  //       mintX,
+  //       mintY,
+  //       mintLp,
+  //       vaultX: vaultAtaX,
+  //       vaultY: vaultAtaY,
+  //       userX: userAtaX,
+  //       userY: userAtaY,
+  //       userLp: userAtaLp,
+  //       config,
+  //       systemProgram,
+  //       associatedTokenProgram,
+  //       tokenProgram,
+  //     }).rpc();
+
+  //   await confirmTx(tx);
+  //   console.log("Your transaction signature", tx);
+
+  // });
+
 
   // Helper function
   const confirmTx = async (signature: string) => {

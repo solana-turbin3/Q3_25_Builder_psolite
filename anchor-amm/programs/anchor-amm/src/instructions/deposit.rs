@@ -3,7 +3,7 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token::{mint_to, transfer, Mint, MintTo, Token, TokenAccount, Transfer},
 };
-use constant_product_curve::{ConstantProduct, CurveError, XYAmounts};
+use constant_product_curve::{ConstantProduct, XYAmounts};
 
 use crate::{error::AmmError, state::Config};
 
@@ -94,10 +94,10 @@ impl<'info> Deposit<'info> {
         require!(x <= max_x, AmmError::SlippageExceeded);
         require!(y <= max_y, AmmError::SlippageExceeded);
 
-        self.deposit_tokens(true, x);
-        self.deposit_tokens(false, y);
+        let _ = self.deposit_tokens(true, x);
+        let _ = self.deposit_tokens(false, y);
 
-        self.mint_lp_tokens(amount);
+        let _ = self.mint_lp_tokens(amount);
 
         Ok(())
     }
