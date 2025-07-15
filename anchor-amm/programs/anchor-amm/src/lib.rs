@@ -42,6 +42,25 @@ pub mod anchor_amm {
         Ok(())
     }
 
+    pub fn swap(ctx: Context<Swap>, amount: u64, min: u64, is_x: bool) -> Result<()> {
+        ctx.accounts.swap(   
+            amount,
+            min,
+            is_x
+        )?;
+        Ok(())
+    }
+
+    pub fn lock(ctx: Context<Update>) -> Result<()> {
+        ctx.accounts.lock()?;
+        Ok(())
+    }
+    
+    pub fn unlock(ctx: Context<Update>) -> Result<()> {
+        ctx.accounts.unlock()?;
+        Ok(())
+    }
+
     
 
 }

@@ -21,6 +21,8 @@ pub enum AmmError {
     SlippageExceeded,
     #[msg("Insufficient Liquidity")]
     InsufficientLiquidity,
+    #[msg("Unauthorized")]
+    Unauthorized,
 }
 
 // TODO: Understand how the From trait works in Rust

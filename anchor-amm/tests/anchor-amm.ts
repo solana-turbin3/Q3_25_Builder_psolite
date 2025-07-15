@@ -28,7 +28,7 @@ describe("anchor-amm", () => {
 
 
 
-  const seed = new anchor.BN(13); // Unique seed for the Config
+  const seed = new anchor.BN(16); // Unique seed for the Config
   const fee = 1000; // Fee for the AMM
   const systemProgram = anchor.web3.SystemProgram.programId;
   const associatedTokenProgram = anchor.utils.token.ASSOCIATED_PROGRAM_ID;
@@ -223,9 +223,9 @@ describe("anchor-amm", () => {
 
   it("Deposit!", async () => {
 
-    const amount = new anchor.BN(30000 * Math.pow(10, 6));
-    const max_x = new anchor.BN(20000 * Math.pow(10, 9));
-    const max_y = new anchor.BN(40000 * Math.pow(10, 9));
+    const amount = new anchor.BN(40000 * Math.pow(10, 6));
+    const max_x = new anchor.BN(30000 * Math.pow(10, 9));
+    const max_y = new anchor.BN(50000 * Math.pow(10, 9));
 
     const tx = await program.methods.deposit(amount, max_x, max_y)
       .accountsStrict({
@@ -248,6 +248,33 @@ describe("anchor-amm", () => {
     console.log("Your transaction signature", tx);
 
   });
+
+  it("Swap!", async () => {
+    
+   
+    const amount = new anchor.BN(5000 * Math.pow(10, 9));
+    const min = new anchor.BN(100 * Math.pow(10, 9));
+
+    const is_x = false;
+
+    const tx = await program.methods.swap(amount, min, is_x)
+      .accountsStrict({
+        user: keypair.publicKey,
+        mintX,
+        mintY,
+        vaultX: vaultAtaX,
+        vaultY: vaultAtaY,
+        userX: userAtaX,
+        userY: userAtaY,
+        config,
+        systemProgram,
+        associatedTokenProgram,
+        tokenProgram,
+      }).rpc();
+
+    await confirmTx(tx);
+    console.log("Your transaction signature", tx);
+  })
 
   it("Withdraw!", async () => {
 
@@ -276,60 +303,35 @@ describe("anchor-amm", () => {
     console.log("Your transaction signature", tx);
 
   });
-  // it("Second Deposit!", async () => {
 
-  //   // Fetch the program account (config) before deposit
-  //   // const configAccount = await program.account.config.fetch(config);
+  it("lock!", async () => {
 
-  //   const vaultXBalance = await safeGetTokenAccountBalance(vaultAtaX);
-  //   const vaultYBalance = await safeGetTokenAccountBalance(vaultAtaY);
-  //   const totalSupplyStr = (await connection.getTokenSupply(mintLp)).value.amount;
+    const tx = await program.methods.lock()
+      .accountsStrict({
+        user: keypair.publicKey,
+        config,
+        systemProgram
+      }).rpc();
 
-  //   // const vaultXBalance = BigInt(vaultXBalanceStr);
-  //   // const vaultYBalance = BigInt(vaultYBalanceStr);
-  //   const totalSupply = Number(totalSupplyStr);
+    await confirmTx(tx);
+    console.log("Your transaction signature", tx);
 
+  });
 
-  //   const amountOfX = 80000 * Math.pow(10, 9); // 80,000 X Tokens
-  //   const amountOfY = 7880 * Math.pow(10, 9); // 7,880 Y Tokens
+  it("Unlock!", async () => {
 
-  //   let liquidity: number;
+    const tx = await program.methods.lock()
+      .accountsStrict({
+        user: keypair.publicKey,
+        config,
+        systemProgram
+      }).rpc();
 
-  //   if (vaultXBalance === 0 && vaultYBalance === 0) {
-  //     // Initial deposit 
-  //     liquidity = Math.sqrt(amountOfX * amountOfY);
-  //   } else {
-  //     // Subsequent deposit
-  //     const X = amountOfX * totalSupply / vaultXBalance;
-  //     const Y = amountOfY * totalSupply / vaultYBalance;
-  //     console.log("X:", X, "Y:", Y);
-  //     liquidity = Math.min(X, Y);
-  //   }
-  //   const amount = new anchor.BN((liquidity * Math.pow(10, 6)) / Math.pow(10, 9));
-  //   const max_x = new anchor.BN(amountOfX);
-  //   const max_y = new anchor.BN(amountOfY);
+    await confirmTx(tx);
+    console.log("Your transaction signature", tx);
 
-  //   const tx = await program.methods.deposit(amount, max_x, max_y)
-  //     .accountsStrict({
-  //       user: keypair.publicKey,
-  //       mintX,
-  //       mintY,
-  //       mintLp,
-  //       vaultX: vaultAtaX,
-  //       vaultY: vaultAtaY,
-  //       userX: userAtaX,
-  //       userY: userAtaY,
-  //       userLp: userAtaLp,
-  //       config,
-  //       systemProgram,
-  //       associatedTokenProgram,
-  //       tokenProgram,
-  //     }).rpc();
-
-  //   await confirmTx(tx);
-  //   console.log("Your transaction signature", tx);
-
-  // });
+  });
+  
 
 
   // Helper function
