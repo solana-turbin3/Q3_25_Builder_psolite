@@ -6,14 +6,14 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-nft_staking = "FRo6mFbbC1r6as2RyD7mFYTfDST8oF1zzKKmBtKK5hsk"
+nft_staking = "PeKuyGHjQYNqhDNP3Cj435MnwPmrufWSyB3FHetLZaM"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
 cluster = "devnet"
-wallet = "/home/xpsolitesol/Turbin3/turbin3-wallet.json"
+wallet = "~/Turbin3/turbin3-wallet.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

@@ -3,11 +3,11 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     metadata::{
         mpl_token_metadata::instructions::{
-            ThawDelegatedAccountCpi, ThawDelegatedAccountCpiAccounts
+            ThawDelegatedAccountCpi, ThawDelegatedAccountCpiAccounts,
         },
         MasterEditionAccount, Metadata,
     },
-    token::{revoke, Revoke, Mint, Token, TokenAccount},
+    token::{revoke, Mint, Revoke, Token, TokenAccount},
 };
 
 use crate::{
@@ -84,10 +84,14 @@ pub struct Unstake<'info> {
 impl<'info> Unstake<'info> {
     pub fn unstake(&mut self) -> Result<()> {
         let time_elapsed =
-            ((Clock::get()?.unix_timestamp - self.stake_account.staked_at) / 86400) as u32;
+        // For testing purposes, I used seconds
+        (Clock::get()?.unix_timestamp - self.stake_account.staked_at) as u32;
+
+        // // For Days
+        // ((Clock::get()?.unix_timestamp - self.stake_account.staked_at) / 86400) as u32;
 
         require!(
-            time_elapsed > self.config.freeze_period,
+            time_elapsed >= self.config.freeze_period,
             StakeError::TimeNotElapsed
         );
 
@@ -112,14 +116,15 @@ impl<'info> Unstake<'info> {
 
         let signer_seeds = &[&seeds[..]];
 
-        let _ = ThawDelegatedAccountCpi::new(&self.metadata_program.to_account_info(), cpi_accounts)
-            .invoke_signed(signer_seeds);
-        
-        let cpi_accounts = Revoke{
+        let _ =
+            ThawDelegatedAccountCpi::new(&self.metadata_program.to_account_info(), cpi_accounts)
+                .invoke_signed(signer_seeds);
+
+        let cpi_accounts = Revoke {
             source: self.user_ata.to_account_info(),
-            authority: self.user.to_account_info()
+            authority: self.user.to_account_info(),
         };
-        
+
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
 
         let _ = revoke(cpi_ctx);
