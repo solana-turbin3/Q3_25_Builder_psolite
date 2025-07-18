@@ -30,18 +30,7 @@ pub struct Unstake<'info> {
     )]
     pub user_ata: Account<'info, TokenAccount>,
 
-    // #[account(
-    //     seeds = [
-    //         b"metadata",
-    //         metadata_program.key().as_ref(),
-    //         mint.key().as_ref(),
-    //     ],
-    //     seeds::program = metadata_program,
-    //     bump,
-    //     constraint = metadata.collection.as_ref().unwrap().key.as_ref() == collection_mint.key().as_ref(),
-    //     constraint = metadata.mint.key() == mint.key(),
-    // )]
-    // pub metadata: Account<'info, MetadataAccount>,
+    
     #[account(
         seeds = [
             b"metadata",
@@ -129,34 +118,6 @@ impl<'info> Unstake<'info> {
 
         let _ = revoke(cpi_ctx);
 
-        // let seeds = &[
-        //     b"stake",
-        //     self.mint.to_account_info().key.as_ref(),
-        //     self.config.to_account_info().key.as_ref(),
-        //     &[self.stake_account.bump]
-        // ];
-
-        // let signer_seeds = &[&seeds[..]];
-
-        // let delegate = &self.stake_account.to_account_info();
-        // let token_account = &self.user_ata.to_account_info();
-        // let edition = &self.edition.to_account_info();
-        // let mint = &self.mint.to_account_info();
-        // let token_program = &self.token_program.to_account_info();
-        // let metadata_program = &self.metadata_program.to_account_info();
-
-        // FreezeDelegatedAccountCpi::new(
-        //     metadata_program,
-        //     FreezeDelegatedAccountCpiAccounts {
-        //         delegate,
-        //         token_account,
-        //         edition,
-        //          mint,
-        //          token_program
-        //         },
-        //             ).invoke_signed(signer_seeds)?;
-
-        //             self.user_account.amount_staked += 1;
 
         Ok(())
     }

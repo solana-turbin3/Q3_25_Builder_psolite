@@ -12,4 +12,6 @@ pub enum StakeError {
     Unauthorized,
     #[msg("Max Stake Exceeded")]
     MaxStakeExceeded,
+    #[msg("Cannot Claim Points While Staked")]
+    CannotClaimPointsWhileStaked,
 }
