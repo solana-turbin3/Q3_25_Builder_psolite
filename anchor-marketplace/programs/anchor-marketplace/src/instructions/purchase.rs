@@ -48,6 +48,7 @@ pub struct Purchase<'info> {
     pub marketplace: Account<'info, Marketplace>,
 
     #[account(
+        mut,
         seeds = [b"treasury", marketplace.key().as_ref()],
         bump = marketplace.treasury_bump,
     )]

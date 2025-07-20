@@ -2,6 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { AnchorMarketplace } from "../target/types/anchor_marketplace";
 import wallet from "/home/xpsolitesol/Turbin3/turbin3-wallet.json";
+import takerWallet from "/home/xpsolitesol/PsoZSQhHg7USeEx8qQLKNhjXARH1XBUj8iGDNp5Y22V.json";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { generateSigner, createSignerFromKeypair, signerIdentity, percentAmount } from "@metaplex-foundation/umi"
 import base58 from "bs58";
@@ -14,6 +15,7 @@ describe("anchor-marketplace", () => {
 
   const program = anchor.workspace.anchorMarketplace as Program<AnchorMarketplace>;
   const keypair = anchor.web3.Keypair.fromSecretKey(new Uint8Array(wallet));
+  const taker_keypair = anchor.web3.Keypair.fromSecretKey(new Uint8Array(takerWallet));
 
 
   let marketplace: anchor.web3.PublicKey;
@@ -24,6 +26,7 @@ describe("anchor-marketplace", () => {
   // let mint: anchor.web3.PublicKey 
   // let collectionMint: anchor.web3.PublicKey
   let makerAta: anchor.web3.PublicKey;
+  let takerAta: anchor.web3.PublicKey;
   let vaultAta: anchor.web3.PublicKey;
   let listing: anchor.web3.PublicKey;
   let metadata: anchor.web3.PublicKey;
@@ -110,6 +113,11 @@ describe("anchor-marketplace", () => {
       owner: keypair.publicKey,
     });
 
+    takerAta = anchor.utils.token.associatedAddress({
+      mint,
+      owner: taker_keypair.publicKey,
+    });
+
 
     [listing] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from("list"), marketplace.toBuffer(), mint.toBuffer()],
@@ -181,6 +189,8 @@ describe("anchor-marketplace", () => {
     console.log("Your transaction signature", tx);
   });
 
+  // You have to comment out Delist to test Purchase 
+
   it("Is DeListing An NFT!", async () => {
     const tx = await program.methods.delisting()
       .accountsStrict({
@@ -198,6 +208,31 @@ describe("anchor-marketplace", () => {
         tokenProgram,
         associatedTokenProgram
       })
+      .rpc();
+    console.log("Your transaction signature", tx);
+  });
+
+  it("Is Purchasing An NFT!", async () => {
+    const tx = await program.methods.purchase()
+      .accountsStrict({
+        taker: taker_keypair.publicKey,
+        maker: keypair.publicKey,
+        mint,
+        takerAta,
+        makerAta,
+        marketplace,
+        treasury,
+        vaultAta,
+        listing,
+        collectionMint,
+        metadata,
+        edition,
+        metadataProgram,
+        systemProgram,
+        tokenProgram,
+        associatedTokenProgram
+      })
+      .signers([taker_keypair])
       .rpc();
     console.log("Your transaction signature", tx);
   });
