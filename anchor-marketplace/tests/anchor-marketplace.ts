@@ -2,11 +2,11 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { AnchorMarketplace } from "../target/types/anchor_marketplace";
 import wallet from "/home/xpsolitesol/Turbin3/turbin3-wallet.json";
-// import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
-// import { generateSigner, createSignerFromKeypair, signerIdentity, percentAmount } from "@metaplex-foundation/umi"
-// import base58 from "bs58";
-// import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
+import { generateSigner, createSignerFromKeypair, signerIdentity, percentAmount } from "@metaplex-foundation/umi"
+import base58 from "bs58";
+import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from "@solana/spl-token";
 
 describe("anchor-marketplace", () => {
   // Configure the client to use the local cluster.
@@ -19,8 +19,10 @@ describe("anchor-marketplace", () => {
   let marketplace: anchor.web3.PublicKey;
   let treasury: anchor.web3.PublicKey;
   let rewardMint: anchor.web3.PublicKey;
-  const mint: anchor.web3.PublicKey = new anchor.web3.PublicKey("BTWHB6HePvPCeHoH5EBN7A9d6zKHegA3SMjGFYSV7vE6");
-  const collectionMint: anchor.web3.PublicKey = new anchor.web3.PublicKey("3aPBCKneaZVEh9r8R6CpJiJxHsRTbuVNfi4q2SDEAAeF");
+  const mint: anchor.web3.PublicKey = new anchor.web3.PublicKey("86uMqozvV2FwJepQpwkrEK7VZV2AJx2veKcuPejairi7");
+  const collectionMint: anchor.web3.PublicKey = new anchor.web3.PublicKey("ET3bxbTB45wQ7tuBZ1EsH8NQp9kWFFkCMPxQUaTqw4dK");
+  // let mint: anchor.web3.PublicKey 
+  // let collectionMint: anchor.web3.PublicKey
   let makerAta: anchor.web3.PublicKey;
   let vaultAta: anchor.web3.PublicKey;
   let listing: anchor.web3.PublicKey;
@@ -32,12 +34,12 @@ describe("anchor-marketplace", () => {
   const tokenProgram = anchor.utils.token.TOKEN_PROGRAM_ID
   const associatedTokenProgram = ASSOCIATED_TOKEN_PROGRAM_ID
 
-  const name = "Rug Marketplace"
+  const name = "rug_mm"
 
   before(async () => {
     // Uncomment the following lines to mint an NFT using Metaplex Umi
     // --------------------------- Start Minting NFT ---------------------------
-    //Mint an NFT using Metaplex Umi
+    // // Mint an NFT using Metaplex Umi
     // const RPC_ENDPOINT = "https://api.devnet.solana.com";
     // const umi = createUmi(RPC_ENDPOINT);
 
@@ -99,7 +101,7 @@ describe("anchor-marketplace", () => {
     );
 
     [rewardMint] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("reward"), marketplace.toBuffer()],
+      [Buffer.from("rewards"), marketplace.toBuffer()],
       program.programId
     );
 
@@ -108,14 +110,16 @@ describe("anchor-marketplace", () => {
       owner: keypair.publicKey,
     });
 
-    vaultAta = anchor.utils.token.associatedAddress({
-      mint,
-      owner: keypair.publicKey,
-    });
 
     [listing] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from("list"), marketplace.toBuffer(), mint.toBuffer()],
       program.programId
+    );
+
+    vaultAta = await getAssociatedTokenAddress(
+      mint,
+      listing,
+      true
     );
 
     [metadata] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -128,11 +132,6 @@ describe("anchor-marketplace", () => {
       metadataProgram
     );
 
-    // [stakeAccount] = anchor.web3.PublicKey.findProgramAddressSync(
-    //   [Buffer.from("stake"), mint.toBuffer(), config.toBuffer()],
-    //   program.programId
-    // );
-    // console.log("stakeAccount: ", stakeAccount.toBase58());
     console.log("marketplace: ", marketplace.toBase58());
     console.log("treasury: ", treasury.toBase58());
     console.log("rewardMint: ", rewardMint.toBase58());
@@ -146,7 +145,7 @@ describe("anchor-marketplace", () => {
 
   it("Is initialized!", async () => {
     const fee = 20
-    const tx = await program.methods.initialize(fee, name)
+    const tx = await program.methods.initialize(name, fee)
       .accountsStrict({
         admin: keypair.publicKey,
         marketplace,
@@ -160,9 +159,30 @@ describe("anchor-marketplace", () => {
   });
 
 
-  it("Is initialized!", async () => {
+  it("Is Listing An NFT!", async () => {
     const price = new anchor.BN(2000000000)
     const tx = await program.methods.listing(price)
+      .accountsStrict({
+        maker: keypair.publicKey,
+        mint,
+        marketplace,
+        makerAta,
+        vaultAta,
+        listing,
+        collectionMint,
+        metadata,
+        edition,
+        metadataProgram,
+        systemProgram,
+        tokenProgram,
+        associatedTokenProgram
+      })
+      .rpc();
+    console.log("Your transaction signature", tx);
+  });
+
+  it("Is DeListing An NFT!", async () => {
+    const tx = await program.methods.delisting()
       .accountsStrict({
         maker: keypair.publicKey,
         mint,

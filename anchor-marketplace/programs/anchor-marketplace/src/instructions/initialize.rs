@@ -4,11 +4,11 @@ use anchor_spl::token_interface::{Mint, TokenInterface};
 use crate::{error::MarketplaceError, state::Marketplace};
 
 #[derive(Accounts)]
-#[instruction(name:String)]
+#[instruction( name: String, fee: u8)]
 
 pub struct Initialize<'info> {
     #[account(mut)]
-    admin: Signer<'info>,
+    pub admin: Signer<'info>,
 
     #[account(
         init,
@@ -42,7 +42,7 @@ pub struct Initialize<'info> {
 }
 
 impl<'info> Initialize<'info> {
-    pub fn init(&mut self, fee: u8, name: String, bumps: &InitializeBumps) -> Result<()> {
+    pub fn init(&mut self, name: String, fee: u8, bumps: &InitializeBumps) -> Result<()> {
         require!(
             name.len() > 0 &&
             name.len() <= 4 + 33,

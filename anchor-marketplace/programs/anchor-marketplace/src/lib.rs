@@ -14,32 +14,32 @@ pub mod anchor_marketplace {
 
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>,fee: u8, name: String ) -> Result<()> {
+    pub fn initialize(ctx: Context<Initialize>,  name: String, fee: u8 ) -> Result<()> {
         ctx.accounts.init(
-            fee,
             name,
+            fee,
             &ctx.bumps
         )?;
         Ok(())
     }
 
-    // pub fn listing(ctx: Context<List>, price: u64 ) -> Result<()> {
-    //     ctx.accounts.create_listing(
-    //        price,
-    //         &ctx.bumps
-    //     )?;
-    //     ctx.accounts.list_nft()?;
-    //     Ok(())
-    // }
+    pub fn listing(ctx: Context<List>, price: u64 ) -> Result<()> {
+        ctx.accounts.create_listing(
+           price,
+            &ctx.bumps
+        )?;
+        ctx.accounts.list_nft()?;
+        Ok(())
+    }
 
-    // pub fn delisting(ctx: Context<Delist> ) -> Result<()> {
-    //     ctx.accounts.delist_nft()?;
-    //     Ok(())
-    // }
+    pub fn delisting(ctx: Context<Delist> ) -> Result<()> {
+        ctx.accounts.delist_nft()?;
+        Ok(())
+    }
 
-    // pub fn purchase(ctx: Context<Purchase> ) -> Result<()> {
-    //     ctx.accounts.pay()?;
-    //     ctx.accounts.transfer_nft()?;
-    //     Ok(())
-    // }
+    pub fn purchase(ctx: Context<Purchase> ) -> Result<()> {
+        ctx.accounts.pay()?;
+        ctx.accounts.transfer_nft()?;
+        Ok(())
+    }
 }
