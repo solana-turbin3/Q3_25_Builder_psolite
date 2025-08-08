@@ -82,7 +82,7 @@ impl<'info> Swap<'info> {
         require!(res.withdraw != 0, AmmError::InvalidAmount);
 
         let _ = self.deposit_tokens(is_x, res.deposit);
-        let _ = self.deposit_tokens(is_x, res.withdraw);
+        let _ = self.withdraw_tokens(is_x, res.withdraw);
 
         Ok(())
     }
