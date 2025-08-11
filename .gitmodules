@@ -1,0 +1,3 @@
+[submodule "capstone-pegging-factory"]
+	path = capstone-pegging-factory
+	url = git@github.com:psolite/capstone-pegging-factory.git
