@@ -1,9 +1,10 @@
-# Overview - Anchor AMM
+# Overview - NFT Staking
 
-This project implements an AMM program on the Solana blockchain using the Anchor framework. The Program Allow User to create a Liquidity Pool by providing to SPL token (e.g BONK and USDC), so anyone can swap in the pool.
+This project implements an NFT Staking program on the Solana blockchain using the Anchor framework. The Program Allow User to staking their Nft, Unstaking the NFT after a set time and enter point.
 
 ## Usage
-
+Deploying this on Devnet due to Metaplex is not available on default on Local validator
+ 
 ```bash
 anchor build
 anchor deploy

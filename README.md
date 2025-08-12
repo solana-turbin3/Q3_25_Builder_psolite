@@ -1,9 +1,10 @@
 # 🔥 Turbin3 Q3 2025 Builder Cohort
 
 Demonstrating advanced Solana blockchain capabilities through:
-- **Secure Anchor programs** (Vaults, Escrows)
+- **Secure Anchor programs** (AMMs, Escrows, Vaults, NFT Marketplaces , NFT Staking)
 - **Program Derived Addresses (PDAs)**
 - **Token & NFT operations**
+- **DeFi protocols**
 - **Rust/TypeScript best practices**
 
 ![Turbine Banner](https://pbs.twimg.com/profile_banners/1707159181914976256/1748632505/1500x500)
@@ -12,17 +13,36 @@ Demonstrating advanced Solana blockchain capabilities through:
 
 ```markdown
 ├── README.md
+├── anchor-amm/                     # Automated Market Maker program
+│   ├── programs/anchor-amm/         # Swap, deposit, withdraw functionality
+│   ├── tests/                       # TypeScript tests
+
+│
 ├── anchor-escrow/                  # Anchor-based escrow program
-│   ├── programs/anchor-escrow/      # Program source code
+│   ├── programs/anchor-escrow/      # Make/take/refund escrows
 │   ├── tests/                       # TypeScript tests
-│   └── app/                         # Frontend application (if applicable)
+
 │
-├── anchor-vault/                    # Anchor-based vault program
-│   ├── programs/anchor-vault/       # Program source code
+├── anchor-marketplace/             # NFT Marketplace program
+│   ├── programs/anchor-marketplace/ # List/delist/purchase NFTs
 │   ├── tests/                       # TypeScript tests
-│   └── app/                         # Frontend application (if applicable)
+
 │
-└── solana-starter/                  # Solana starter toolkit
+├── anchor-vault/                   # Anchor-based vault program
+│   ├── programs/anchor-vault/       # Token vault operations
+│   ├── tests/                       # TypeScript tests
+
+│
+├── capstone-pegging-factory/       # Advanced pegging protocol
+│   ├── programs/                    # Platform/project pegging operations
+│   ├── tests/                       # Comprehensive test suite
+│
+├── nft-staking/                    # NFT Staking program
+│   ├── programs/nft-staking/        # Stake/unstake NFTs
+│   ├── tests/                       # TypeScript tests
+
+│
+└── solana-starter/                 # Solana starter toolkit
     ├── rs/                          # Rust programs and utilities
     ├── ts/                          # TypeScript scripts and tools
     │   ├── cluster1/                # Mainnet/testnet operations
@@ -33,23 +53,7 @@ Demonstrating advanced Solana blockchain capabilities through:
 
 ## Projects
 
-### 1. Anchor Escrow
-A secure escrow program built with Anchor framework. Features:
-- Make escrow offers
-- Take escrow offers
-- Secure state management
-
-[View Details](./anchor-escrow/README.md)
-
-### 2. Anchor Vault
-A token vault program built with Anchor framework. Features:
-- Token deposits
-- Secure withdrawals
-- Account management
-
-[View Details](./anchor-vault/README.md)
-
-### 3. Solana Starter
+### 1. Solana Starter
 A collection of starter scripts and utilities for Solana development. Includes:
 - Rust programs
 - TypeScript interaction scripts
@@ -58,19 +62,65 @@ A collection of starter scripts and utilities for Solana development. Includes:
 - NFT operations
 
 [View Details](./solana-starter/README.md)
+### 2. Anchor Escrow
+A secure escrow program built with Anchor framework. Features:
+- Make escrow offers
+- Take escrow offers
+- Secure state management
+
+[View Details](./anchor-escrow/README.md)
+
+### 3. Anchor Vault
+A token vault program built with Anchor framework. Features:
+- Token deposits
+- Secure withdrawals
+- Account management
+
+[View Details](./anchor-vault/README.md)
+
+### 4. NFT Staking
+Reward-bearing staking program with:
+- NFT locking
+- Reward calculation
+- Configurable periods
+
+[View Details](./nft-staking/README.md)
+
+### 5. Anchor AMM
+Automated Market Maker program with:
+- Token swaps
+- Liquidity provision
+- Pool management
+
+[View Details](./anchor-amm/README.md)
+
+### 6. Anchor Marketplace
+NFT Marketplace with:
+- Listing management
+- Secure purchases
+- Royalty support
+
+[View Details](./anchor-marketplace/README.md)
+
+### 7. Pegging factory (IronPeg)
+CapStone that I built from what I learnt:
+- Cross-platform pegging
+- Yield distribution
+- Fee claiming
+
+[View Details](https://github.com/psolite/capstone-pegging-factory)
+
 
 ## Getting Started
 
 1. Clone the repository:
 ```bash
-git clone 
+git clone <repo url>
 ```
 
 2. Install dependencies in each project directory:
 ```bash
-cd anchor-escrow && yarn install
-cd ../anchor-vault && yarn install
-cd ../solana-starter/ts && npm install
+cd anchor-escrow && npm install
 ```
 
 3. Build and test programs:
